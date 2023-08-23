@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "388406613111",
+    "project_id": "taxischrono-c12c9",
+    "storage_bucket": "taxischrono-c12c9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388406613111:android:3104c566d967dbf662a272",
+        "android_client_info": {
+          "package_name": "com.incc.taxischrono.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388406613111-4ama9814rmq80k2ikfg1is3dl8pqd4sa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.incc.taxischrono.app",
+            "certificate_hash": "49e2f21cf070a1eab8fcf866a4978273a2a2ab27"
+          }
+        },
+        {
+          "client_id": "388406613111-uj399lmf6itidrebtv6krolrcip6aaev.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVYyZjeyE7UmSJQTSVqkVnYvk_QfGW9sg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388406613111-uj399lmf6itidrebtv6krolrcip6aaev.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "388406613111-62jmhg9i9efdg659l9adclfsmkjt9as5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.taxichronos-driver.INCC.app.taxichronoDriver"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:388406613111:android:2982495cf4dc121462a272",
+        "android_client_info": {
+          "package_name": "com.incc.taxischronodriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "388406613111-uj399lmf6itidrebtv6krolrcip6aaev.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVYyZjeyE7UmSJQTSVqkVnYvk_QfGW9sg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "388406613111-uj399lmf6itidrebtv6krolrcip6aaev.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "388406613111-62jmhg9i9efdg659l9adclfsmkjt9as5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.taxichronos-driver.INCC.app.taxichronoDriver"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
