@@ -24,6 +24,7 @@ final grey = Colors.grey[400];
 
 final authentication = FirebaseAuth.instance;
 final datatbase = FirebaseDatabase.instance;
+final bd = FirebaseFirestore.instance;
 final firestore = FirebaseFirestore.instance;
 
 final police = GoogleFonts.poppins(fontSize: 14);

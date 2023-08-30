@@ -114,7 +114,7 @@ class _TransitionChauffeurVehiculeState
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Text(
-                          "Erreur de connexion internet ...",
+                          "vous n'avez pas de voiture",
                           style: police,
                         ),
                       ),
@@ -123,9 +123,13 @@ class _TransitionChauffeurVehiculeState
                     boutonText(
                         context: context,
                         action: () {
-                          haveCar();
+                          //haveCar();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const RequestCar()));
                         },
-                        text: 'Rechargé')
+                        text: 'ajoutez votre voiture')
                   ],
                 ),
               ),

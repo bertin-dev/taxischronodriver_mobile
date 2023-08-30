@@ -64,7 +64,17 @@ class Vehicule {
 
 // demande d'enrégistrement du véhicule
   Future requestSave() async {
-    await datatbase
+    await bd.collection("cars").doc(chauffeurId).get().then((value) async {
+      if (value.exists) {
+        return "véhicule déja existant ce véhicule existe déjà";
+      } else {
+        await bd.collection("cars").doc(chauffeurId).set(toMap()).then((value) {
+          Get.find<VehiculeController>().currentVehicul.value = this;
+        });
+      }
+      return true;
+    });
+    /*await datatbase
         .ref("Vehicules")
         .child(chauffeurId)
         .get()
@@ -81,7 +91,7 @@ class Vehicule {
         });
       }
       return true;
-    });
+    });*/
   }
 
 // fonction de miseAjour de la position du chauffeur et ou du véhicule
