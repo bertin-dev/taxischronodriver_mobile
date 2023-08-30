@@ -10,7 +10,6 @@ class DelayedAnimation extends StatefulWidget {
   State<DelayedAnimation> createState() => _DelayedAnimationState();
 
   // ignore: library_private_types_in_public_api
-
 }
 
 class _DelayedAnimationState extends State<DelayedAnimation>
@@ -35,9 +34,13 @@ class _DelayedAnimationState extends State<DelayedAnimation>
       begin: const Offset(0.0, -0.35),
       end: Offset.zero,
     ).animate(curve);
-
-    Timer(Duration(milliseconds: widget.delay), () {
+    /*Future.delayed(Duration(milliseconds: widget.delay), () {
       _controller.forward();
+    });*/
+    Timer(Duration(milliseconds: widget.delay), () {
+      if (mounted) {
+        _controller.forward();
+      }
     });
   }
 
