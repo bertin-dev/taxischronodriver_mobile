@@ -160,7 +160,8 @@ class _SideBarState extends State<SideBar> {
                   onTap: () async => isConnected
                       ? Authservices().logOut().then((value) {
                           // print("deconnexion");
-                          Navigator.of(context).pop();
+                          // Navigator.of(context).pop();
+                          connexion();
                           setState(() {});
                         })
                       : getsnac(

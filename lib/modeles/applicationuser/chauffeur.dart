@@ -243,9 +243,9 @@ class Chauffeur extends ApplicationUser {
         debugPrint(Vehicule.froJson(value.data()).toMap().toString());
         try {
           result = Vehicule.froJson(value.data());
-          /*print(
-              "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");*/
-          //print(result!.imatriculation);
+          print(
+              "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+          print(result!.imatriculation);
         } catch (e) {
           debugPrint(e.toString());
           result = null;

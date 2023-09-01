@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,15 @@ class _TransitionChauffeurVehiculeState
     extends State<TransitionChauffeurVehicule> {
   bool? haveVehicule;
   bool isEmailVerified = authentication.currentUser!.emailVerified;
+
+  Stream<QuerySnapshot> havehicules(BuildContext context) async* {
+    final uid = await authentication.currentUser!.uid;
+    yield* bd
+        .collection('cars')
+        .where('chauffeurId', isEqualTo: uid)
+        .snapshots();
+  }
+
   haveCar() async {
     setState(() {
       loafinTimerend = false;
@@ -85,9 +95,6 @@ class _TransitionChauffeurVehiculeState
   Timer? timer;
   @override
   void initState() {
-    print("ppppppppppppppppppppppppppppppppppppp");
-    Chauffeur.chauffeurInfos(authentication.currentUser!.uid);
-    haveCar();
     Get.put<VehiculeController>(VehiculeController());
     Get.put<ChauffeurController>(ChauffeurController());
 
@@ -106,44 +113,38 @@ class _TransitionChauffeurVehiculeState
   Widget build(BuildContext context) {
     //if (haveVehicule==false) {
     return Scaffold(
-        body: haveVehicule == true ? const HomePage() : const HomePage()
-        /*loafinTimerend
-            ? const LoadingComponen()
-            : Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          "${haveVehicule}",
-                          // "vous n'avez pas de voiture",
-                          style: police,
-                        ),
-                      ),
+      body: Container(
+        child: StreamBuilder<QuerySnapshot>(
+            stream: havehicules(context),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Padding(
+                  padding: const EdgeInsets.only(left: 120, top: 250),
+                  child: Text(
+                    'Something went wrong',
+                    style: TextStyle(
+                      color: Colors.black87,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
                     ),
-                    spacerHeight(50),
-                    boutonText(
-                        context: context,
-                        action: () {
-                          haveCar();
-                          /* Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const RequestCar()));*/
-                        },
-                        text: 'ajoutez votre voiture')
-                  ],
-                ),
-              ),*/
-        );
-    // }
-    // else {
-    // haveVehicule == true ? const HomePage() : const RequestCar();
-    // }
+                  ),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              if (snapshot.hasData) {
+                return const HomePage();
+              }
+              return const RequestCar();
+            }),
+      ),
+    );
   }
 
   sendVerificationEmail() async {
@@ -168,3 +169,21 @@ class _TransitionChauffeurVehiculeState
     });
   }
 }
+
+/*class userListvehiculeCard extends StatefulWidget {
+  userListvehiculeCard({Key? key, required this.vehicule}) : super(key: key);
+  final Vehicule vehicule;
+
+  @override
+  State<userListvehiculeCard> createState() => _userListvehiculeCardState();
+}
+
+class _userListvehiculeCardState extends State<userListvehiculeCard> {
+  
+
+  @override
+  Widget build(BuildContext context) {
+ 
+    return Text(widget.vehicule.assurance);
+  }
+}*/

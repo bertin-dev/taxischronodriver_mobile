@@ -130,4 +130,13 @@ class Authservices extends ChangeNotifier {
       debugPrint(e.code);
     }
   }
+
+  Future SignOut() async {
+    try {
+      return await authentication.signOut();
+    } catch (exception) {
+      print(exception.toString());
+      return null;
+    }
+  }
 }

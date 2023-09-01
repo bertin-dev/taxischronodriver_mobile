@@ -62,6 +62,37 @@ class Vehicule {
         statut: map['statut'],
       );
 
+  /// code ajouter récemment
+  Vehicule.fromJson(Map<String, dynamic> parsedJSON)
+      : activeEndDate =
+            DateTime.fromMillisecondsSinceEpoch(parsedJSON['activeEndDate']),
+        isActive = parsedJSON["isActive"] ?? false,
+        chauffeurId = parsedJSON['chauffeurId'],
+        assurance = parsedJSON['assurance'],
+        expirationAssurance = DateTime.fromMicrosecondsSinceEpoch(
+            parsedJSON['expirationAssurance']),
+        imatriculation = parsedJSON['imatriculation'],
+        numeroDeChassie = parsedJSON["numeroDeChassie"],
+        token = parsedJSON['token'] ?? "",
+        position = LatLng(parsedJSON['position']['latitude'],
+            parsedJSON['position']['longitude']),
+        statut = parsedJSON['statut'];
+//////////////////////////////////
+  Vehicule.fromSnapshot(snapshot)
+      : activeEndDate = DateTime.fromMillisecondsSinceEpoch(
+            snapshot.data()['activeEndDate']),
+        isActive = snapshot.data()["isActive"] ?? false,
+        chauffeurId = snapshot.data()['chauffeurId'],
+        assurance = snapshot.data()['assurance'],
+        expirationAssurance = DateTime.fromMicrosecondsSinceEpoch(
+            snapshot.data()['expirationAssurance']),
+        imatriculation = snapshot.data()['imatriculation'],
+        numeroDeChassie = snapshot.data()["numeroDeChassie"],
+        token = snapshot.data()['token'] ?? "",
+        position = LatLng(snapshot.data()['position']['latitude'],
+            snapshot.data()['position']['longitude']),
+        statut = snapshot.data()['statut'];
+
 // demande d'enrégistrement du véhicule
   Future requestSave() async {
     await bd.collection("cars").doc(chauffeurId).get().then((value) async {

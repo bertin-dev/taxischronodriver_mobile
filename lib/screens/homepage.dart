@@ -75,15 +75,17 @@ class _HomePageState extends State<HomePage> {
     if (location == null) {
       var permissison = await GooGleMapServices.handleLocationPermission();
       if (permissison) {
-        await Geolocator.getCurrentPosition(
-                desiredAccuracy: LocationAccuracy.high)
-            .then((value) {
-          setState(() {
-            location = LatLng(value.latitude, value.longitude);
-            setMrkers();
-            // print(location!.latitude);
+        if (mounted) {
+          await Geolocator.getCurrentPosition(
+                  desiredAccuracy: LocationAccuracy.high)
+              .then((value) {
+            setState(() {
+              location = LatLng(value.latitude, value.longitude);
+              setMrkers();
+              // print(location!.latitude);
+            });
           });
-        });
+        }
       }
     }
 
@@ -91,7 +93,6 @@ class _HomePageState extends State<HomePage> {
       location = LatLng(event.latitude, event.longitude);
       await Vehicule.setPosition(location!, authentication.currentUser!.uid);
       setMrkers();
-      setState(() {});
     });
   }
 
