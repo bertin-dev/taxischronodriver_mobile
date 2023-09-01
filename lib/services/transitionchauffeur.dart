@@ -46,7 +46,9 @@ class _TransitionChauffeurVehiculeState
             .then((value) async {
           debugPrint('car : ${value!.toMap()}');
           if (value != null) {
-            setState(() => haveVehicule = true);
+            setState(() {
+              haveVehicule = true;
+            });
             setState(() {
               loafinTimerend = false;
             });
@@ -83,6 +85,8 @@ class _TransitionChauffeurVehiculeState
   Timer? timer;
   @override
   void initState() {
+    print("ppppppppppppppppppppppppppppppppppppp");
+    Chauffeur.chauffeurInfos(authentication.currentUser!.uid);
     haveCar();
     Get.put<VehiculeController>(VehiculeController());
     Get.put<ChauffeurController>(ChauffeurController());
@@ -100,9 +104,10 @@ class _TransitionChauffeurVehiculeState
 
   @override
   Widget build(BuildContext context) {
-    if (haveVehicule == null) {
-      return Scaffold(
-        body: !loafinTimerend
+    //if (haveVehicule==false) {
+    return Scaffold(
+        body: haveVehicule == true ? const HomePage() : const HomePage()
+        /*loafinTimerend
             ? const LoadingComponen()
             : Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -114,7 +119,8 @@ class _TransitionChauffeurVehiculeState
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
                         child: Text(
-                          "vous n'avez pas de voiture",
+                          "${haveVehicule}",
+                          // "vous n'avez pas de voiture",
                           style: police,
                         ),
                       ),
@@ -123,20 +129,21 @@ class _TransitionChauffeurVehiculeState
                     boutonText(
                         context: context,
                         action: () {
-                          //haveCar();
-                          Navigator.push(
+                          haveCar();
+                          /* Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const RequestCar()));
+                                  builder: (context) => const RequestCar()));*/
                         },
                         text: 'ajoutez votre voiture')
                   ],
                 ),
-              ),
-      );
-    } else {
-      return haveVehicule == true ? const HomePage() : const RequestCar();
-    }
+              ),*/
+        );
+    // }
+    // else {
+    // haveVehicule == true ? const HomePage() : const RequestCar();
+    // }
   }
 
   sendVerificationEmail() async {

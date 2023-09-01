@@ -96,7 +96,14 @@ class Vehicule {
 
 // fonction de miseAjour de la position du chauffeur et ou du véhicule
   static Future setPosition(LatLng positionActuel, String userId) async {
-    await datatbase.ref("Vehicules").child(userId).update({
+    /*await datatbase.ref("Vehicules").child(userId).update({
+      "position": {
+        "latitude": positionActuel.latitude,
+        "longitude": positionActuel.longitude,
+      }
+    });*/
+
+    await bd.collection("cars").doc(userId).update({
       "position": {
         "latitude": positionActuel.latitude,
         "longitude": positionActuel.longitude,
@@ -106,9 +113,18 @@ class Vehicule {
 
   //  actuellement en ligne ou or ligne
   setStatut(bool etatActuel) async {
-    await datatbase
+    /* await datatbase
         .ref("Vehicules")
         .child(chauffeurId)
+        .update({"statut": etatActuel}).then((value) async {
+      if (statut == false) {
+        await firestore.collection('Courses').doc(chauffeurId).delete();
+      }
+    });*/
+
+    await bd
+        .collection("cars")
+        .doc(chauffeurId)
         .update({"statut": etatActuel}).then((value) async {
       if (statut == false) {
         await firestore.collection('Courses').doc(chauffeurId).delete();
@@ -117,27 +133,59 @@ class Vehicule {
   }
 
   static setActiveState(bool etatActuel, jours, chauffeurId) async {
-    await datatbase
+    /* await datatbase
         .ref("Vehicules")
         .child(chauffeurId)
+        .update({"isActive": etatActuel, "activeEndDate": jours});*/
+
+    await bd
+        .collection("cars")
+        .doc(chauffeurId)
         .update({"isActive": etatActuel, "activeEndDate": jours});
   }
 
-  static Stream<Vehicule> vehiculeStrem(idchau) =>
+  /* static Stream<Vehicule> vehiculeStrem(idchau) =>
       datatbase.ref("Vehicules").child(idchau).onValue.map((event) {
         return Vehicule.froJson(event.snapshot.value);
-      });
+      });*/
+  static Stream<Vehicule> vehiculeStrem(idchau) {
+    return bd.collection("cars").doc(idchau).snapshots().map((event) {
+      return Vehicule.froJson(event.data());
+    });
+  }
+
   static Future<Vehicule?> vehiculeFuture(idchau) =>
-      datatbase.ref("Vehicules").child(idchau).get().then((event) {
+      /*datatbase.ref("Vehicules").child(idchau).get().then((event) {
         try {
           return Vehicule.froJson(event.value);
         } catch (e) {
           null;
         }
         return null;
+      });*/
+      bd.collection("cars").doc(idchau).get().then((event) {
+        try {
+          return Vehicule.froJson(event.data());
+        } catch (e) {
+          null;
+        }
+        return null;
       });
 
-  static Future<List<Vehicule?>> vehiculRequette() =>
+  Stream<List<Vehicule?>> getMaisonList() {
+    return bd
+        .collection("cars")
+        .orderBy(
+          'date ajout',
+          descending: true,
+        )
+        .snapshots()
+        .map((snapShot) => snapShot.docs
+            .map((document) => Vehicule.froJson(document.data()))
+            .toList());
+  }
+
+  /*static Future<List<Vehicule?>> vehiculRequette() =>
       datatbase.ref("Vehicules").get().then((event) {
         return event.children.map((vehi) {
           try {
@@ -146,6 +194,6 @@ class Vehicule {
             return null;
           }
         }).toList();
-      });
+      });*/
   // fin de la classe
 }

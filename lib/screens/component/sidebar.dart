@@ -50,13 +50,16 @@ class _SideBarState extends State<SideBar> {
             currentAccountPicture: CircleAvatar(
               radius: 70,
               child: ClipOval(
-                child: CachedNetworkImage(
+                child: checkUrl(
+                  'https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png',
+                ),
+                /* CachedNetworkImage(
                   imageUrl:
                       'https://png.pngtree.com/png-clipart/20190924/original/pngtree-business-people-avatar-icon-user-profile-free-vector-png-image_4815126.jpg',
                   fit: BoxFit.cover,
                   width: double.infinity,
                   height: 90,
-                ),
+                ),*/
               ),
             ),
             // decoration: const BoxDecoration(
@@ -174,4 +177,13 @@ class _SideBarState extends State<SideBar> {
         child: const LoginPage(),
         type: PageTransitionType.fade,
       ));
+}
+
+Widget checkUrl(String url) {
+  try {
+    return Image.network(url,
+        height: 90, width: double.infinity, fit: BoxFit.cover);
+  } catch (e) {
+    return Icon(Icons.image);
+  }
 }

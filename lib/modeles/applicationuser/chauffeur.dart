@@ -209,12 +209,12 @@ class Chauffeur extends ApplicationUser {
         .doc(idChauffeur)
         .get()
         .then((user) {
-      // print('Users datas ${user.data()}');
+      print(user.data());
       return user.data()!;
     });
     final chauffeurMap =
         await chauffeurCollection(idChauffeur).get().then((event) {
-      // print('Chauffeurs datas datas ${event.data()}');
+      print(event.data);
       return event.data()!;
     });
     return Chauffeur.fromMap(userMap: userMap, chauffeurMap: chauffeurMap);
@@ -223,11 +223,29 @@ class Chauffeur extends ApplicationUser {
 // vérifier si l'utilisateur a un véhicule.
   static Future<Vehicule?> havehicule(userid) async {
     Vehicule? result;
-    await datatbase.ref("Vehicules").child(userid).get().then((value) {
+    /* await datatbase.ref("Vehicules").child(userid).get().then((value) {
       if (value.exists) {
         debugPrint(Vehicule.froJson(value.value).toMap().toString());
         try {
           result = Vehicule.froJson(value.value);
+        } catch (e) {
+          debugPrint(e.toString());
+          result = null;
+        }
+      } else {
+        result = null;
+      }
+    });
+    return result;*/
+
+    bd.collection("cars").doc(userid).get().then((value) {
+      if (value.exists) {
+        debugPrint(Vehicule.froJson(value.data()).toMap().toString());
+        try {
+          result = Vehicule.froJson(value.data());
+          /*print(
+              "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");*/
+          //print(result!.imatriculation);
         } catch (e) {
           debugPrint(e.toString());
           result = null;
