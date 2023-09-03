@@ -8,6 +8,8 @@ import 'package:taxischronodriver/modeles/applicationuser/appliactionuser.dart';
 import 'package:taxischronodriver/modeles/autres/reservation.dart';
 import 'package:taxischronodriver/modeles/autres/transaction.dart';
 import 'package:taxischronodriver/modeles/autres/vehicule.dart';
+import 'package:taxischronodriver/screens/auth/car_register.dart';
+import 'package:taxischronodriver/screens/homepage.dart';
 import 'package:taxischronodriver/services/transitionchauffeur.dart';
 import 'package:taxischronodriver/varibles/variables.dart';
 
@@ -220,6 +222,11 @@ class Chauffeur extends ApplicationUser {
     return Chauffeur.fromMap(userMap: userMap, chauffeurMap: chauffeurMap);
   }
 
+///////////////
+  static Future<dynamic> havehicul(uid) async {
+    await bd.collection("cars").doc(uid).get();
+  }
+
 // vérifier si l'utilisateur a un véhicule.
   static Future<Vehicule?> havehicule(userid) async {
     Vehicule? result;
@@ -240,18 +247,18 @@ class Chauffeur extends ApplicationUser {
 
     bd.collection("cars").doc(userid).get().then((value) {
       if (value.exists) {
+        const HomePage();
+
         debugPrint(Vehicule.froJson(value.data()).toMap().toString());
         try {
           result = Vehicule.froJson(value.data());
-          print(
-              "ttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
-          print(result!.imatriculation);
         } catch (e) {
           debugPrint(e.toString());
           result = null;
         }
       } else {
         result = null;
+        const RequestCar();
       }
     });
     return result;

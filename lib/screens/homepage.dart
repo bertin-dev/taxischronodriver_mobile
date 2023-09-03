@@ -27,6 +27,7 @@ import 'package:taxischronodriver/screens/component/courswaiting.dart';
 
 import 'package:taxischronodriver/screens/component/sidebar.dart';
 import 'package:taxischronodriver/services/mapservice.dart';
+import 'package:taxischronodriver/services/transitionchauffeur.dart';
 import 'package:taxischronodriver/varibles/variables.dart';
 
 import '../controllers/useapp_controller.dart';
@@ -415,6 +416,17 @@ class _HomePageState extends State<HomePage> {
             onTap: () async {
               loder = true;
               setState(() {});
+
+              Chauffeur.havehicule(authentication.currentUser!.uid)
+                  .then((value) {
+                if (value!.isActive) {
+                  Fluttertoast.showToast(
+                      msg: 'Vous avez déjà utilisé votre temps d\'éssaie',
+                      toastLength: Toast.LENGTH_LONG);
+                  loder = false;
+                  setState(() {});
+                }
+              });
               await datatbase
                   .ref('Vehicules')
                   .child(authentication.currentUser!.uid)
@@ -435,10 +447,14 @@ class _HomePageState extends State<HomePage> {
                         true, date.millisecondsSinceEpoch, value!.chauffeurId);
                   });
 
-                  await datatbase
+                  /* await datatbase
                       .ref('Vehicules')
                       .child(authentication.currentUser!.uid)
-                      .update({"assaie": true}).then((value) {
+                      .update({"assaie": true})*/
+                  await bd
+                      .collection("cars")
+                      .doc(authentication.currentUser!.uid)
+                      .update({"isActive": true}).then((value) {
                     loder = false;
                     setState(() {});
                     Fluttertoast.showToast(
@@ -664,7 +680,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     //  boutton permettant de valider le paiement
                     TextButton(
+                      /////////
                       onPressed: () async {
+                        print("uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
+                        print(authentication.currentUser!.phoneNumber);
                         if (controllerphone.text.trim().length == 9) {
                           Navigator.of(context).pop();
                           loder = true;
@@ -673,7 +692,8 @@ class _HomePageState extends State<HomePage> {
                             'currency': 'xaf',
                             'channel': 'mobile',
                             'data': {
-                              'phone': '+237${controllerphone.text}',
+                              'phone': authentication.currentUser!.phoneNumber
+                              //'phone': '+237${controllerphone.text}',
                             },
                           };
                           try {
@@ -771,7 +791,7 @@ class _HomePageState extends State<HomePage> {
                               color: Colors.red,
                               long: true);
                         }
-                      },
+                      }, ///////
                       child: Text(
                         'valider',
                         style: police.copyWith(fontWeight: FontWeight.bold),
@@ -854,9 +874,14 @@ class _HomePageState extends State<HomePage> {
   initializeFirebaseMessaging() async {
     final instanceMessage = FirebaseMessaging.instance;
     await instanceMessage.getToken().then((token) async {
-      await datatbase
+      /* await datatbase
           .ref("Vehicules")
           .child(authentication.currentUser!.uid)
+          .update({"token": token});*/
+
+      await bd
+          .collection("cars")
+          .doc(authentication.currentUser!.uid)
           .update({"token": token});
     });
   }
