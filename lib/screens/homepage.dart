@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
   ///////////////.
   Completer controllerMap = Completer<GoogleMapController>();
   ScrollController controllerSlide = ScrollController();
-
+  late Vehicule vehicule;
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool voirs = false;
   LatLng? location;
@@ -414,16 +414,48 @@ class _HomePageState extends State<HomePage> {
           spacerHeight(30),
           ListTile(
             onTap: () async {
-              loder = true;
+              //loder = true;
               setState(() {});
-
-              Chauffeur.havehicule(authentication.currentUser!.uid)
-                  .then((value) {
-                if (value!.isActive) {
+//////recupére les données de cars
+              await bd
+                  .collection('cars')
+                  .doc(authentication.currentUser!.uid)
+                  .get()
+                  .then((event) async {
+                if (event['isActive'] == true) {
                   Fluttertoast.showToast(
                       msg: 'Vous avez déjà utilisé votre temps d\'éssaie',
                       toastLength: Toast.LENGTH_LONG);
-                  loder = false;
+                  //loder = false;
+                  setState(() {});
+                } else {
+                  /*await Chauffeur.havehicule(authentication.currentUser!.uid)
+                      .then((value) async {*/
+                  final date = DateTime.now().add(const Duration(days: 7));
+                  await Vehicule.setActiveState(
+                      true,
+                      date.millisecondsSinceEpoch,
+                      authentication.currentUser!.uid);
+
+                  // loder = false;
+                  setState(() {});
+                  Fluttertoast.showToast(
+                      msg:
+                          "Vous avez activé votre période d'éssaie avec succes",
+                      toastLength: Toast.LENGTH_LONG);
+                  Navigator.of(context).pop();
+                  // });
+                }
+              });
+
+              /* Chauffeur.havehicule(authentication.currentUser!.uid)
+                  .then((value) async {
+                vehicule = value!;
+                if (vehicule.isActive == true) {
+                  Fluttertoast.showToast(
+                      msg: 'Vous avez déjà utilisé votre temps d\'éssaie',
+                      toastLength: Toast.LENGTH_LONG);
+                  /* loder = false;
                   setState(() {});
                 }
               });
@@ -436,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                 if (value.exists) {
                   Fluttertoast.showToast(
                       msg: 'Vous avez déjà utilisé votre temps d\'éssaie',
-                      toastLength: Toast.LENGTH_LONG);
+                      toastLength: Toast.LENGTH_LONG);*/
                   loder = false;
                   setState(() {});
                 } else {
@@ -445,13 +477,21 @@ class _HomePageState extends State<HomePage> {
                     final date = DateTime.now().add(const Duration(days: 7));
                     await Vehicule.setActiveState(
                         true, date.millisecondsSinceEpoch, value!.chauffeurId);
+
+                    loder = false;
+                    setState(() {});
+                    Fluttertoast.showToast(
+                        msg:
+                            "Vous avez activé votre période d'éssaie avec succes",
+                        toastLength: Toast.LENGTH_LONG);
+                    Navigator.of(context).pop();
                   });
 
                   /* await datatbase
                       .ref('Vehicules')
                       .child(authentication.currentUser!.uid)
                       .update({"assaie": true})*/
-                  await bd
+                  /* await bd
                       .collection("cars")
                       .doc(authentication.currentUser!.uid)
                       .update({"isActive": true}).then((value) {
@@ -462,9 +502,9 @@ class _HomePageState extends State<HomePage> {
                             "Vous avez activé votre période d'éssaie avec succes",
                         toastLength: Toast.LENGTH_LONG);
                     Navigator.of(context).pop();
-                  });
+                  });*/
                 }
-              });
+              });*/
               // await payement(jours: 8, prix: 2500, scaffoldkey: scaffoldKey);
             },
             shape: RoundedRectangleBorder(
@@ -692,8 +732,8 @@ class _HomePageState extends State<HomePage> {
                             'currency': 'xaf',
                             'channel': 'mobile',
                             'data': {
-                              'phone': authentication.currentUser!.phoneNumber
-                              //'phone': '+237${controllerphone.text}',
+                              // 'phone': authentication.currentUser!.phoneNumber
+                              'phone': '+237${controllerphone.text}',
                             },
                           };
                           try {

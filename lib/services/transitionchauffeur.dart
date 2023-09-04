@@ -28,7 +28,7 @@ class TransitionChauffeurVehicule extends StatefulWidget {
 
 class _TransitionChauffeurVehiculeState
     extends State<TransitionChauffeurVehicule> {
-  bool? haveVehicule;
+  bool haveVehicule = false;
 
   bool isEmailVerified = authentication.currentUser!.emailVerified;
   haveCar() async {
@@ -45,23 +45,27 @@ class _TransitionChauffeurVehiculeState
         timer.cancel();
       }
       try {
-        await Chauffeur.havehicule(authentication.currentUser!.uid)
-            .then((value) async {
-          debugPrint('car : ${value!.toMap()}');
-          if (value != null) {
+        await bd
+            .collection('cars')
+            .doc(authentication.currentUser!.uid)
+            .get()
+            .then((event) async {
+          // debugPrint('car : ${value!.toMap()}');
+          if (event.exists) {
             haveVehicule = true;
             setState(() => haveVehicule = true);
             setState(() {
               loafinTimerend = false;
             });
-            final comparaison = value.activeEndDate.compareTo(DateTime.now());
+            final comparaison =
+                event['activeEndDate'].activeEndDate.compareTo(DateTime.now());
             if (comparaison < 0) {
               debugPrint('la date viens avant');
               try {
                 await Vehicule.setActiveState(
                     false,
-                    value.activeEndDate.millisecondsSinceEpoch,
-                    value.chauffeurId);
+                    event['activeEndDate'].millisecondsSinceEpoch,
+                    event['chauffeurId']);
               } catch (e) {
                 debugPrint("Erreur de mise à jour de la date : $e");
               }
@@ -105,39 +109,7 @@ class _TransitionChauffeurVehiculeState
 
   @override
   Widget build(BuildContext context) {
-    if (haveVehicule == false) {
-      return Scaffold(
-        body: !loafinTimerend
-            ? const LoadingComponen()
-            : Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          "Erreur de connexion internet ...",
-                          style: police,
-                        ),
-                      ),
-                    ),
-                    spacerHeight(50),
-                    boutonText(
-                        context: context,
-                        action: () {
-                          haveCar();
-                        },
-                        text: 'Rechargé')
-                  ],
-                ),
-              ),
-      );
-    } else {
-      return haveVehicule == true ? const RequestCar() : const HomePage();
-    }
+    return haveVehicule ? const HomePage() : const RequestCar();
   }
 
   sendVerificationEmail() async {
