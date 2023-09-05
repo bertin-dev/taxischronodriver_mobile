@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 // import 'package:fluttertoast/fluttertoast.dart';
@@ -166,6 +167,99 @@ class _SideBarState extends State<SideBar> {
                           title: "DÉCONNEXION", msg: "Aucun compte connecté"),
                 )
               : const SizedBox.shrink(),
+
+          ListTile(
+              title: Text('Supprimer mon compte', style: police),
+              leading: const Icon(Icons.delete_forever),
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Supprimer votre compte?'),
+                      content: const Text(
+                          '''Si vous sélectionnez Supprimer, nous supprimerons votre compte sur notre serveur. 
+
+Les données de votre application seront également supprimées et vous ne pourrez pas les récupérer.'''),
+                      actions: [
+                        TextButton(
+                          child: const Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('Delete',
+                              style: TextStyle(color: Colors.red)),
+                          onPressed: () async {
+                            bool step1 = true;
+                            bool step2 = false;
+                            bool step3 = false;
+                            bool step4 = false;
+                            while (true) {
+                              if (step1) {
+                                ///ajouter ce matin 5/9/2023
+                                Navigator.of(context).pop();
+                                //delete user info in the database
+                                getsnac(
+                                    title: "suppression du compte",
+                                    msg: "suppression en cours");
+                                Duration(seconds: 9);
+                                var delete = await bd
+                                    .collection('Utilisateur')
+                                    .doc(authentication.currentUser!.uid)
+                                    .delete();
+                                await bd
+                                    .collection('cars')
+                                    .doc(authentication.currentUser!.uid)
+                                    .delete();
+                                await bd
+                                    .collection('Chauffeur')
+                                    .doc(authentication.currentUser!.uid)
+                                    .delete();
+                                step1 = false;
+                                step2 = true;
+                              }
+
+                              if (step2) {
+                                //delete user
+                                await FirebaseAuth.instance.currentUser!
+                                    .delete();
+                                // deleteUserAccount();
+                                step2 = false;
+                                step3 = true;
+                              }
+
+                              if (step3) {
+                                await FirebaseAuth.instance.signOut();
+                                step3 = false;
+                                step4 = true;
+                              }
+
+                              if (step4) {
+                                //go to sign up log in page
+                                // await Navigator.pushNamed(context, '/');
+                                connexion();
+                                step4 = false;
+
+                                ///ajouter ce matin 5/9/2023
+
+                                getsnac(
+                                    title: "suppression du compte",
+                                    msg: "compte supprimer avec succés");
+                              }
+
+                              if (!step1 && !step2 && !step3 && !step4) {
+                                break;
+                              }
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              })
         ],
       ),
     );
@@ -184,5 +278,41 @@ Widget checkUrl(String url) {
         height: 90, width: double.infinity, fit: BoxFit.cover);
   } catch (e) {
     return Icon(Icons.image);
+  }
+}
+
+Future<void> deleteUserAccount() async {
+  try {
+    await FirebaseAuth.instance.currentUser!.delete();
+  } on FirebaseAuthException catch (e) {
+    //log.e(e);
+
+    if (e.code == "requires-recent-login") {
+      await _reauthenticateAndDelete();
+    } else {
+      // Handle other Firebase exceptions
+    }
+  } catch (e) {
+    //log.e(e);
+
+    // Handle general exception
+  }
+}
+
+Future<void> _reauthenticateAndDelete() async {
+  try {
+    final providerData = FirebaseAuth.instance.currentUser?.providerData.first;
+
+    if (AppleAuthProvider().providerId == providerData!.providerId) {
+      await FirebaseAuth.instance.currentUser!
+          .reauthenticateWithProvider(AppleAuthProvider());
+    } else if (GoogleAuthProvider().providerId == providerData.providerId) {
+      await FirebaseAuth.instance.currentUser!
+          .reauthenticateWithProvider(GoogleAuthProvider());
+    }
+
+    await FirebaseAuth.instance.currentUser?.delete();
+  } catch (e) {
+    // Handle exceptions
   }
 }

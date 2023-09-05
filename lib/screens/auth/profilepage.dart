@@ -218,12 +218,16 @@ class ProfileScreen extends StatelessWidget {
                             top: 0,
                             left: 0,
                             right: 0,
-                            child: Center(
-                              child: Image.asset(
-                                'images/user.png',
-                                width: innerWidth * 0.45,
-                                fit: BoxFit.fitWidth,
-                              ),
+                            child: Column(
+                              children: [
+                                Center(
+                                  child: Image.asset(
+                                    'images/user.png',
+                                    width: innerWidth * 0.45,
+                                    fit: BoxFit.fitWidth,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],

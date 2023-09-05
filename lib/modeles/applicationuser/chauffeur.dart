@@ -282,10 +282,47 @@ class Chauffeur extends ApplicationUser {
     return result!.isActive;
   }
 
+  Future<void> deleteUserAccount() async {
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+    } on FirebaseAuthException catch (e) {
+      //log.e(e);
+
+      if (e.code == "requires-recent-login") {
+        await _reauthenticateAndDelete();
+      } else {
+        // Handle other Firebase exceptions
+      }
+    } catch (e) {
+      //log.e(e);
+
+      // Handle general exception
+    }
+  }
+
+  Future<void> _reauthenticateAndDelete() async {
+    try {
+      final providerData =
+          FirebaseAuth.instance.currentUser?.providerData.first;
+
+      if (AppleAuthProvider().providerId == providerData!.providerId) {
+        await FirebaseAuth.instance.currentUser!
+            .reauthenticateWithProvider(AppleAuthProvider());
+      } else if (GoogleAuthProvider().providerId == providerData.providerId) {
+        await FirebaseAuth.instance.currentUser!
+            .reauthenticateWithProvider(GoogleAuthProvider());
+      }
+
+      await FirebaseAuth.instance.currentUser?.delete();
+    } catch (e) {
+      // Handle exceptions
+    }
+  }
+
 // fin de la classe
 }
 
-class Abonnement {
+/*class Abonnement {
   DateTime? paiementdate;
   String idChauffeur;
   double montant;
@@ -329,4 +366,4 @@ class Abonnement {
       }
     });
   }
-}
+}*/
