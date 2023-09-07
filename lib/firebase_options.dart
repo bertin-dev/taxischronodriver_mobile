@@ -62,7 +62,7 @@ class DefaultFirebaseOptions {
   );*/
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDx0VVYSYc3OgedqVZ94DkkpN55QMlvaM4',
-    appId: '1:255452747282:android:ea3c534754cceb3d99eacb',
+    appId: '1:255452747282:android:f02fe1b52f8f79b199eacb',
     messagingSenderId: '255452747282',
     projectId: 'taxi-chrono-firebase',
     storageBucket: 'taxi-chrono-firebase.appspot.com',
