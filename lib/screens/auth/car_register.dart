@@ -131,45 +131,47 @@ class _RequestCarState extends State<RequestCar> {
   }
 
   Future valideRequest(bool loader) async {
-    if (formkey.currentState!.validate()) {
-      setState(() {
-        loader = true;
-      });
-      Vehicule vehicule = Vehicule(
-          assurance: controllerassurance.text,
-          expirationAssurance: expireassurance!,
-          isActive: false,
-          activeEndDate: DateTime.now(),
-          imatriculation: controllerimat.text,
-          numeroDeChassie: controllerChassie.text,
-          chauffeurId: authentication.currentUser!.uid,
-          statut: false,
-          position: GooGleMapServices.currentPosition,
-          token: " ");
-      await vehicule.requestSave().then((value) async {
-        if (value == true) {
-          await ApplicationUser.infos(authentication.currentUser!.uid)
-              .then((value) {
-            Navigator.of(context).pushReplacement(
-              PageTransition(
-                child: TransitionChauffeurVehicule(
-                  applicationUser: value,
-                ),
-                type: PageTransitionType.leftToRight,
+    // if (formkey.currentState!.validate()) {
+    setState(() {
+      loader = true;
+    });
+    Vehicule vehicule = Vehicule(
+        assurance: controllerassurance.text,
+        expirationAssurance: expireassurance!,
+        isActive: false,
+        activeEndDate: DateTime.now(),
+        imatriculation: controllerimat.text,
+        numeroDeChassie: controllerChassie.text,
+        chauffeurId: authentication.currentUser!.uid,
+        statut: false,
+        position: GooGleMapServices.currentPosition,
+        token: " ");
+    await vehicule.requestSave().then((value) async {
+      if (value == true) {
+        await ApplicationUser.infos(authentication.currentUser!.uid)
+            .then((value) {
+          Navigator.of(context).pushReplacement(
+            PageTransition(
+              child: TransitionChauffeurVehicule(
+                applicationUser: value,
               ),
-            );
-          });
-          setState(() {
-            loader = false;
-          });
-        } else if (value == "véhicule déja existant ce véhicule existe déjà") {
-          setState(() {
-            loader = false;
-          });
-          getsnac(title: "Erreur d'enrégistrement ", msg: "$value");
-        }
-      });
-    }
+              type: PageTransitionType.leftToRight,
+            ),
+          );
+        });
+        setState(() {
+          loader = false;
+        });
+      } else if (value == "véhicule déja existant ce véhicule existe déjà") {
+        setState(() {
+          loader = false;
+        });
+        getsnac(title: "Erreur d'enrégistrement ", msg: "$value");
+      }
+    });
+    // } else {
+    //   print("error ");
+    // }
   }
 
 // formulaire d'inscripttions
@@ -179,28 +181,28 @@ class _RequestCarState extends State<RequestCar> {
       child: Column(
         children: [
           // le numéro de chassie
-          DelayedAnimation(
-            delay: 3500,
-            child: TextFormField(
-              controller: controllerChassie,
-              validator: (value) {
-                return value != null || (value!.trim().isNotEmpty)
-                    ? value.length < 4
-                        ? "entrer un numéro de chassie valide"
-                        : null
-                    : 'veillez entrer un numéro de chassie';
-              },
-              style: police,
-              decoration: InputDecoration(
-                icon: const Icon(Icons.car_rental),
-                hintStyle: police,
-                labelText: 'Numero De Chassi',
-                labelStyle: TextStyle(
-                  color: grey,
-                ),
-              ),
-            ),
-          ),
+          // DelayedAnimation(
+          //   delay: 3500,
+          //   child: TextFormField(
+          //     controller: controllerChassie,
+          //     validator: (value) {
+          //       return value != null || (value!.trim().isNotEmpty)
+          //           ? value.length < 4
+          //               ? "entrer un numéro de chassie valide"
+          //               : null
+          //           : 'veillez entrer un numéro de chassie';
+          //     },
+          //     style: police,
+          //     decoration: InputDecoration(
+          //       icon: const Icon(Icons.car_rental),
+          //       hintStyle: police,
+          //       labelText: 'Numero De Chassi',
+          //       labelStyle: TextStyle(
+          //         color: grey,
+          //       ),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(height: 10),
 
           // le modèle du véhicule
@@ -219,7 +221,8 @@ class _RequestCarState extends State<RequestCar> {
               decoration: InputDecoration(
                 icon: const Icon(Icons.local_taxi_outlined),
                 hintStyle: police,
-                labelText: 'Model De Vehicule',
+                // labelText: 'Model De Vehicule',
+                labelText: 'Marque Du Vehicule',
                 labelStyle: TextStyle(
                   color: grey,
                 ),
@@ -279,45 +282,45 @@ class _RequestCarState extends State<RequestCar> {
           const SizedBox(height: 10),
 
           // date d'expiration de l'assurance
-          DelayedAnimation(
-            delay: 3500,
-            child: TextFormField(
-              style: police,
-              controller: controllerExpirAssurance,
-              validator: (val) {
-                return val == null || expireassurance == null
-                    ? "entrezla date d'expiration du permis"
-                    : null;
-              },
-              onTap: () async {
-                await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(
-                    const Duration(days: 365 * 5),
-                  ),
-                ).then((value) {
-                  if (value == null) return;
-                  setState(() {
-                    expireassurance = value;
-                    controllerExpirAssurance.text =
-                        DateFormat("EEE d MM y").format(expireassurance!);
-                  });
-                  FocusScope.of(context).unfocus();
-                });
-              },
-              decoration: InputDecoration(
-                icon: const Icon(Icons.date_range),
-                hintStyle: police,
-                labelText: 'La date d\'expiration du permi.',
-                labelStyle: TextStyle(
-                  color: grey,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
+          // DelayedAnimation(
+          //   delay: 3500,
+          //   child: TextFormField(
+          //     style: police,
+          //     controller: controllerExpirAssurance,
+          //     validator: (val) {
+          //       return val == null || expireassurance == null
+          //           ? "entrezla date d'expiration du permis"
+          //           : null;
+          //     },
+          //     onTap: () async {
+          //       await showDatePicker(
+          //         context: context,
+          //         initialDate: DateTime.now(),
+          //         firstDate: DateTime.now(),
+          //         lastDate: DateTime.now().add(
+          //           const Duration(days: 365 * 5),
+          //         ),
+          //       ).then((value) {
+          //         if (value == null) return;
+          //         setState(() {
+          //           expireassurance = value;
+          //           controllerExpirAssurance.text =
+          //               DateFormat("EEE d MM y").format(expireassurance!);
+          //         });
+          //         FocusScope.of(context).unfocus();
+          //       });
+          //     },
+          //     decoration: InputDecoration(
+          //       icon: const Icon(Icons.date_range),
+          //       hintStyle: police,
+          //       labelText: 'La date d\'expiration du permi.',
+          //       labelStyle: TextStyle(
+          //         color: grey,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(height: 10),
           // couleur du véhicule
           DelayedAnimation(
             delay: 3500,

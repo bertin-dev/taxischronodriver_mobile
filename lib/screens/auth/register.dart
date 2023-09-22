@@ -391,45 +391,45 @@ class _SignupPageState extends State<SignupPage> {
           const SizedBox(height: 10),
 
           // date d'expiration du permi
-          DelayedAnimation(
-            delay: 3500,
-            child: TextFormField(
-              style: police,
-              controller: controllerExpirPermi,
-              validator: (val) {
-                return val == null || expirePermi == null
-                    ? "entrezla date d'expiration du permis"
-                    : null;
-              },
-              onTap: () async {
-                await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(
-                    const Duration(days: 365 * 5),
-                  ),
-                ).then((value) {
-                  if (value == null) return;
-                  setState(() {
-                    expirePermi = value;
-                    controllerExpirPermi.text =
-                        DateFormat("EEE d MM y").format(expirePermi!);
-                  });
-                  FocusScope.of(context).unfocus();
-                });
-              },
-              decoration: InputDecoration(
-                icon: const Icon(Icons.date_range),
-                hintStyle: police,
-                labelText: 'La date d\'expiration du permi.',
-                labelStyle: TextStyle(
-                  color: grey,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
+          // DelayedAnimation(
+          //   delay: 3500,
+          //   child: TextFormField(
+          //     style: police,
+          //     controller: controllerExpirPermi,
+          //     validator: (val) {
+          //       return val == null || expirePermi == null
+          //           ? "entrezla date d'expiration du permis"
+          //           : null;
+          //     },
+          //     onTap: () async {
+          //       await showDatePicker(
+          //         context: context,
+          //         initialDate: DateTime.now(),
+          //         firstDate: DateTime.now(),
+          //         lastDate: DateTime.now().add(
+          //           const Duration(days: 365 * 5),
+          //         ),
+          //       ).then((value) {
+          //         if (value == null) return;
+          //         setState(() {
+          //           expirePermi = value;
+          //           controllerExpirPermi.text =
+          //               DateFormat("EEE d MM y").format(expirePermi!);
+          //         });
+          //         FocusScope.of(context).unfocus();
+          //       });
+          //     },
+          //     decoration: InputDecoration(
+          //       icon: const Icon(Icons.date_range),
+          //       hintStyle: police,
+          //       labelText: 'La date d\'expiration du permi.',
+          //       labelStyle: TextStyle(
+          //         color: grey,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(height: 10),
 
           // numero de CNI
           DelayedAnimation(
@@ -455,46 +455,46 @@ class _SignupPageState extends State<SignupPage> {
           const SizedBox(height: 10),
 
           // date d'expiration de la CNI
-          DelayedAnimation(
-            delay: 3500,
-            child: TextFormField(
-              style: police,
-              controller: controllerExpireCni,
-              validator: (val) {
-                return val == null || expireCni == null
-                    ? "entrez la date d'expiration de la CNI"
-                    : null;
-              },
-              onTap: () async {
-                await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime.now().add(
-                    const Duration(days: 365 * 5),
-                  ),
-                ).then((expireCniselected) {
-                  if (expireCniselected == null) return;
-                  setState(() {
-                    expireCni = expireCniselected;
-                    controllerExpireCni.text =
-                        DateFormat('EEE d MM y').format(expireCni!);
-                  });
-                  debugPrint(DateFormat('EEE MM y').format(expireCni!));
-                  FocusScope.of(context).unfocus();
-                });
-              },
-              decoration: InputDecoration(
-                icon: const Icon(Icons.date_range),
-                hintStyle: police,
-                labelText: 'La date d\'expiration de la CNI.',
-                labelStyle: TextStyle(
-                  color: grey,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
+          // DelayedAnimation(
+          //   delay: 3500,
+          //   child: TextFormField(
+          //     style: police,
+          //     controller: controllerExpireCni,
+          //     validator: (val) {
+          //       return val == null || expireCni == null
+          //           ? "entrez la date d'expiration de la CNI"
+          //           : null;
+          //     },
+          //     onTap: () async {
+          //       await showDatePicker(
+          //         context: context,
+          //         initialDate: DateTime.now(),
+          //         firstDate: DateTime.now(),
+          //         lastDate: DateTime.now().add(
+          //           const Duration(days: 365 * 5),
+          //         ),
+          //       ).then((expireCniselected) {
+          //         if (expireCniselected == null) return;
+          //         setState(() {
+          //           expireCni = expireCniselected;
+          //           controllerExpireCni.text =
+          //               DateFormat('EEE d MM y').format(expireCni!);
+          //         });
+          //         debugPrint(DateFormat('EEE MM y').format(expireCni!));
+          //         FocusScope.of(context).unfocus();
+          //       });
+          //     },
+          //     decoration: InputDecoration(
+          //       icon: const Icon(Icons.date_range),
+          //       hintStyle: police,
+          //       labelText: 'La date d\'expiration de la CNI.',
+          //       labelStyle: TextStyle(
+          //         color: grey,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(height: 10),
 
           // adresse au lieu d'abitation
           DelayedAnimation(

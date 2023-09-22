@@ -8,7 +8,6 @@ import 'package:taxischronodriver/firebase_options.dart';
 import 'package:taxischronodriver/modeles/applicationuser/appliactionuser.dart';
 import 'package:taxischronodriver/notifications/confi_messenging.dart';
 import 'package:taxischronodriver/screens/auth/login_page.dart';
-import 'package:taxischronodriver/screens/homepage.dart';
 import 'package:taxischronodriver/services/transitionchauffeur.dart';
 
 void main() async {
