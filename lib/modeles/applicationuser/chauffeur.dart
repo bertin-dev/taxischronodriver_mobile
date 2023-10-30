@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:taxischronodriver/controllers/useapp_controller.dart';
 import 'package:taxischronodriver/modeles/applicationuser/appliactionuser.dart';
@@ -19,6 +20,7 @@ class Chauffeur extends ApplicationUser {
   final String? numeroPermi;
   final DateTime? expirePermiDate;
   String? passeword;
+  static Logger logger = Logger();
   Chauffeur({
     required super.userAdresse,
     required super.userEmail,
@@ -73,7 +75,7 @@ class Chauffeur extends ApplicationUser {
         });
       } else {
         toaster(
-            message: 'Erreur d\'inscription veillez reéssayer',
+            message: 'Erreur d\'inscription veuillez rééssayer',
             color: Colors.red);
       }
     });
@@ -92,6 +94,8 @@ class Chauffeur extends ApplicationUser {
         await authentication
             .signInWithCredential(credential)
             .then((value) async {
+              print("--------------------------------------------$value");
+              logger.i(value);
           if (value.user != null) {
             chauffeurOtp.userid = value.user!.uid;
             await value.user!.updateEmail(chauffeurOtp.userEmail);
@@ -116,10 +120,11 @@ class Chauffeur extends ApplicationUser {
         });
       },
       verificationFailed: (FirebaseAuthException except) {
+        logger.i(except.code);
         debugPrint(except.code);
         toaster(
             message:
-                "Une Erreur est survenus l'ors de l'inscription Veillez reéssayer",
+                "Une Erreur est survenue lors de l'inscription Veuillez reéssayer",
             long: true,
             color: Colors.red);
       },

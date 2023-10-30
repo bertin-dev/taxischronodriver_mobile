@@ -16,13 +16,14 @@ class RequestCar extends StatefulWidget {
   @override
   State<RequestCar> createState() => _RequestCarState();
 }
-
 class _RequestCarState extends State<RequestCar> {
-  TextEditingController controllerChassie = TextEditingController();
+  //TextEditingController controllerChassie = TextEditingController();
   TextEditingController controllerassurance = TextEditingController();
   TextEditingController controllerimat = TextEditingController();
-  TextEditingController controllermodele = TextEditingController();
+  //TextEditingController controllermodele = TextEditingController();
   TextEditingController controllerCouleur = TextEditingController();
+  TextEditingController controllerCapacity = TextEditingController();
+  TextEditingController controllerGreyCard = TextEditingController();
   final formkey = GlobalKey<FormState>();
   bool loder = false;
   //  le debu du corps
@@ -141,7 +142,8 @@ class _RequestCarState extends State<RequestCar> {
         isActive: false,
         activeEndDate: DateTime.now(),
         imatriculation: controllerimat.text,
-        numeroDeChassie: controllerChassie.text,
+        greyCard: controllerGreyCard.text,
+        capacity: controllerCapacity.text,
         chauffeurId: authentication.currentUser!.uid,
         statut: false,
         position: GooGleMapServices.currentPosition,
@@ -206,7 +208,7 @@ class _RequestCarState extends State<RequestCar> {
           const SizedBox(height: 10),
 
           // le modèle du véhicule
-          DelayedAnimation(
+          /*DelayedAnimation(
             delay: 3500,
             child: TextFormField(
               controller: controllermodele,
@@ -229,7 +231,7 @@ class _RequestCarState extends State<RequestCar> {
               ),
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 10),*/
 
           // la plaque d'imatricularion
           DelayedAnimation(
@@ -248,6 +250,58 @@ class _RequestCarState extends State<RequestCar> {
                 icon: const Icon(Icons.card_travel),
                 hintStyle: police,
                 labelText: 'Votre Numero de Plaque Immatriculation',
+                labelStyle: TextStyle(
+                  color: grey,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          //capacité
+          DelayedAnimation(
+            delay: 3500,
+            child: TextFormField(
+              controller: controllerCapacity,
+              validator: (value) {
+                return value != null || (value!.trim().isNotEmpty)
+                    ? value.length < 2
+                    ? "une capacité valide"
+                    : null
+                    : 'veillez entrer la capacité de votre véhicule';
+              },
+              style: police,
+              decoration: InputDecoration(
+                icon: const Icon(Icons.local_taxi_outlined),
+                hintStyle: police,
+                // labelText: 'Model De Vehicule',
+                labelText: 'Capacité du Vehicule',
+                labelStyle: TextStyle(
+                  color: grey,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+
+          //Carte grise
+          DelayedAnimation(
+            delay: 3500,
+            child: TextFormField(
+              controller: controllerGreyCard,
+              validator: (value) {
+                return value != null || (value!.trim().isNotEmpty)
+                    ? value.length < 2
+                    ? "une carte grise valide valide"
+                    : null
+                    : 'veillez entrer la carte grise de votre véhicule';
+              },
+              style: police,
+              decoration: InputDecoration(
+                icon: const Icon(Icons.local_taxi_outlined),
+                hintStyle: police,
+                // labelText: 'Model De Vehicule',
+                labelText: 'Carte grise du Vehicule',
                 labelStyle: TextStyle(
                   color: grey,
                 ),

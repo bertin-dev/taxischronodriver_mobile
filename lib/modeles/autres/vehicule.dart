@@ -4,7 +4,7 @@ import 'package:taxischronodriver/controllers/vehiculecontroller.dart';
 import 'package:taxischronodriver/varibles/variables.dart';
 
 class Vehicule {
-  String numeroDeChassie;
+  String? numeroDeChassie;
   String imatriculation;
   String assurance;
   DateTime expirationAssurance;
@@ -13,6 +13,8 @@ class Vehicule {
   String token;
 
   String chauffeurId;
+  String? capacity;
+  String? greyCard;
   bool
       statut; // permet de verifier que le vehicule est soit en ligne soit hors ligne.
   LatLng? position;
@@ -22,12 +24,14 @@ class Vehicule {
     required this.expirationAssurance,
     required this.token,
     required this.imatriculation,
-    required this.numeroDeChassie,
+    this.numeroDeChassie,
     required this.isActive,
     this.position,
     required this.activeEndDate,
     required this.chauffeurId,
     required this.statut,
+    this.capacity,
+    this.greyCard,
   });
 
   Map<String, dynamic> toMap() => {
@@ -45,6 +49,8 @@ class Vehicule {
           },
         "statut": statut,
         'chauffeurId': chauffeurId,
+        'capacity': capacity,
+        'grey_card': greyCard,
       };
   factory Vehicule.froJson(map) => Vehicule(
         activeEndDate:
@@ -60,6 +66,8 @@ class Vehicule {
         position:
             LatLng(map['position']['latitude'], map['position']['longitude']),
         statut: map['statut'],
+        capacity: map['capacity'],
+        greyCard: map['grey_card'],
       );
 
   /// code ajouter récemment
@@ -76,7 +84,9 @@ class Vehicule {
         token = parsedJSON['token'] ?? "",
         position = LatLng(parsedJSON['position']['latitude'],
             parsedJSON['position']['longitude']),
-        statut = parsedJSON['statut'];
+        statut = parsedJSON['statut'],
+        capacity = parsedJSON['capacity'],
+        greyCard = parsedJSON['grey_card'];
 //////////////////////////////////
   Vehicule.fromSnapshot(snapshot)
       : activeEndDate = DateTime.fromMillisecondsSinceEpoch(
@@ -91,7 +101,9 @@ class Vehicule {
         token = snapshot.data()['token'] ?? "",
         position = LatLng(snapshot.data()['position']['latitude'],
             snapshot.data()['position']['longitude']),
-        statut = snapshot.data()['statut'];
+        statut = snapshot.data()['statut'],
+        capacity = snapshot.data()['capacity'],
+        greyCard = snapshot.data()['grey_card'];
 
 // demande d'enrégistrement du véhicule
   Future requestSave() async {
