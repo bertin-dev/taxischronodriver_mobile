@@ -138,7 +138,7 @@ class _RequestCarState extends State<RequestCar> {
     });
     Vehicule vehicule = Vehicule(
         assurance: controllerassurance.text,
-        expirationAssurance: expireassurance!,
+        expirationAssurance: expireassurance,
         isActive: false,
         activeEndDate: DateTime.now(),
         imatriculation: controllerimat.text,

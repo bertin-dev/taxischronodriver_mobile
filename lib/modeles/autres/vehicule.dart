@@ -7,7 +7,7 @@ class Vehicule {
   String? numeroDeChassie;
   String imatriculation;
   String assurance;
-  DateTime expirationAssurance;
+  DateTime? expirationAssurance;
   bool isActive;
   DateTime activeEndDate;
   String token;
@@ -21,7 +21,7 @@ class Vehicule {
 
   Vehicule({
     required this.assurance,
-    required this.expirationAssurance,
+    this.expirationAssurance,
     required this.token,
     required this.imatriculation,
     this.numeroDeChassie,
@@ -36,7 +36,7 @@ class Vehicule {
 
   Map<String, dynamic> toMap() => {
         "assurance": assurance,
-        "expirationAssurance": expirationAssurance.millisecondsSinceEpoch,
+        "expirationAssurance": expirationAssurance?.millisecondsSinceEpoch,
         "imatriculation": imatriculation,
         "numeroDeChassie": numeroDeChassie,
         "isActive": isActive,
@@ -58,8 +58,8 @@ class Vehicule {
         isActive: map["isActive"] ?? false,
         chauffeurId: map['chauffeurId'],
         assurance: map['assurance'],
-        expirationAssurance:
-            DateTime.fromMicrosecondsSinceEpoch(map['expirationAssurance']),
+        expirationAssurance: map['expirationAssurance'] != null ?
+            DateTime.fromMicrosecondsSinceEpoch(map['expirationAssurance']) : null,
         imatriculation: map['imatriculation'],
         numeroDeChassie: map["numeroDeChassie"],
         token: map['token'] ?? "",
