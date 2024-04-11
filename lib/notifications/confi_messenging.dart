@@ -13,6 +13,8 @@ FlutterLocalNotificationsPlugin notificationPlugin =
     FlutterLocalNotificationsPlugin();
 
 Future<void> firebaseMessanginbackgroundHandler(RemoteMessage message) async {
+  print('Message de notification reçu en arrière-plan : ${message.notification?.title}');
+  print('song de notification reçu en arrière-plan : ${message.notification?.android?.sound}');
   Firebase.initializeApp();
 }
 
@@ -59,15 +61,23 @@ eventListner() {
 //   );
 // }
 
-requestPermissionMessenging() async {
-  // final messaging = FirebaseMessaging.instance;
-  // NotificationSettings settings = await messaging.requestPermission(
-  //   alert: true,
-  //   announcement: false,
-  //   badge: true,
-  //   carPlay: false,
-  //   criticalAlert: false,
-  //   provisional: false,
-  //   sound: true,
-  // );
+Future<void> requestPermissionMessenging() async {
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+    print('Autorisations de notification accordées');
+    // Configurer la méthode de gestion des notifications en arrière-plan
+    FirebaseMessaging.onBackgroundMessage(firebaseMessanginbackgroundHandler);
+  } else {
+    print('Autorisations de notification refusées');
+  }
 }

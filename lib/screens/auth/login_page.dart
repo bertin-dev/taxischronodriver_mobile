@@ -1,14 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'package:taxischronodriver/screens/delayed_animation.dart';
 import 'package:taxischronodriver/screens/auth/register.dart';
 import 'package:taxischronodriver/services/firebaseauthservice.dart';
 
+import '../../modeles/applicationuser/appliactionuser.dart';
 import '../../varibles/variables.dart';
 import 'login_number.dart';
 
@@ -24,6 +27,8 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   bool loader = false;
   TextEditingController controllerPasswor = TextEditingController();
+  Logger logger = Logger();
+  final _db = FirebaseFirestore.instance;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,45 +122,62 @@ class _LoginPageState extends State<LoginPage> {
                                 setState(() {
                                   loader = true;
                                 });
-                                await Authservices()
-                                    .login(controllerEmail.text,
-                                        controllerPasswor.text)
-                                    .then((login) {
+
+                                await getUserAuthenticate(controllerEmail.text, controllerPasswor.text).then((value) async {
                                   setState(() {
                                     loader = false;
                                   });
-                                  switch (login) {
-                                    case null:
-                                      // Navigator.of(context).pop();
-                                      setState(() {});
-                                      break;
-                                    case "network-request-failed":
-                                      getsnac(
-                                        title: "Erreur de connexion",
-                                        msg:
+
+                                  if(value != null && value is ApplicationUser){
+                                    logger.w(value.toJson());
+                                    await Authservices()
+                                        .login(value.userEmail,
+                                        controllerPasswor.text)
+                                        .then((login) {
+                                      switch (login) {
+                                        case null:
+                                        // Navigator.of(context).pop();
+                                          setState(() {});
+                                          break;
+                                        case "network-request-failed":
+                                          getsnac(
+                                            title: "Erreur de connexion",
+                                            msg:
                                             'Erreur de connexion internet veillez vérifier votre connexion internet puis reéssayer',
-                                      );
-                                      break;
-                                    case 'user-not-found':
-                                      getsnac(
-                                        title: "Erreur de connexion",
-                                        msg:
+                                          );
+                                          break;
+                                        case 'user-not-found':
+                                          getsnac(
+                                            title: "Erreur de connexion",
+                                            msg:
                                             'Aucun utilisateur avec cet email n\'a été trouvé',
-                                      );
-                                      break;
-                                    case "wrong-password":
-                                      getsnac(
-                                        title: "Erreur de connexion",
-                                        msg: 'Email ou mot de passe incorect',
-                                      );
-                                      break;
-                                    default:
-                                      getsnac(
-                                        title: "Erreur de connexion : $login",
-                                        msg: 'Veillez reéssayer',
-                                      );
+                                          );
+                                          break;
+                                        case "wrong-password":
+                                          getsnac(
+                                            title: "Erreur de connexion",
+                                            msg: 'Email ou mot de passe incorect',
+                                          );
+                                          break;
+                                        default:
+                                          getsnac(
+                                            title: "Erreur de connexion : $login",
+                                            msg: 'Veillez reéssayer',
+                                          );
+                                      }
+                                    });
+                                  }else{
+                                    getsnac(
+                                      title: "Erreur de connexion",
+                                      msg:
+                                      'Aucun utilisateur avec cet email n\'a été trouvé',
+                                    );
+                                    logger.i('Aucun utilisateur avec cet email n\'a été trouvé');
                                   }
+
+
                                 });
+
                               } else {}
                             },
                           ),
@@ -211,7 +233,7 @@ class _LoginPageState extends State<LoginPage> {
                       //   ),
                       // ),
                       // const SizedBox(height: 15),
-                      DelayedAnimation(
+                      /*DelayedAnimation(
                         delay: 2500,
                         child: ElevatedButton(
                           onPressed: () {
@@ -241,7 +263,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      spacerHeight(15),
+                      spacerHeight(15),*/
                       DelayedAnimation(
                         delay: 2550,
                         child: SizedBox(
@@ -312,8 +334,8 @@ class _LoginPageState extends State<LoginPage> {
               child: TextFormField(
                 controller: controllerEmail,
                 decoration: InputDecoration(
-                  icon: const Icon(Icons.email),
-                  labelText: 'Votre e-mail',
+                  icon: const Icon(Icons.phone),
+                  labelText: 'Téléphone ou E-mail',
                   labelStyle: TextStyle(
                     color: Colors.grey[400],
                   ),
@@ -354,4 +376,35 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
       );
+
+
+  Future getUserAuthenticate(String emailOrPhone, String password) async {
+    logger.d('tc+237$emailOrPhone@gmail.com');
+    ApplicationUser userapp;
+
+    // Vérification dans la collection "Utilisateur"
+    final driverCollection = _db.collection('Utilisateur');
+    final driverQueryEmail = await driverCollection
+        .where('userEmail', isEqualTo: 'tc+237$emailOrPhone@gmail.com')
+        .limit(1)
+        .get();
+
+    final driverQueryPhone = await driverCollection
+        .where('userTelephone', isEqualTo: '+237$emailOrPhone')
+        .limit(1)
+        .get();
+
+    logger.d(driverQueryEmail.size);
+    if (driverQueryEmail.docs.isNotEmpty) {
+      userapp = driverQueryEmail.docs.map((e) => ApplicationUser.fromJson(e.data())).single;
+      return userapp;
+    }
+
+    logger.d(driverQueryPhone.size);
+    if (driverQueryPhone.docs.isNotEmpty) {
+      userapp = driverQueryPhone.docs.map((e) => ApplicationUser.fromJson(e.data())).single;
+      return userapp;
+    }
+    return null;
+  }
 }

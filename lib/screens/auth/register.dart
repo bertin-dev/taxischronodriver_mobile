@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
@@ -9,7 +7,6 @@ import 'package:taxischronodriver/modeles/applicationuser/appliactionuser.dart';
 import 'package:taxischronodriver/modeles/applicationuser/chauffeur.dart';
 import 'package:taxischronodriver/screens/delayed_animation.dart';
 import 'package:taxischronodriver/screens/auth/login_number.dart';
-import 'package:taxischronodriver/screens/auth/otppage.dart';
 import 'package:taxischronodriver/varibles/variables.dart';
 
 class SignupPage extends StatefulWidget {
@@ -48,7 +45,7 @@ class _SignupPageState extends State<SignupPage> {
       loader = true;
       setState(() {});
       await ApplicationUser.userExist(
-              userEmail: controlleremail.text,
+              userEmail: "tc${numberSubmited!.phoneNumber}@gmail.com",
               userPhonNumber: numberSubmited!.phoneNumber)
           .then((value) async {
         if (value) {
@@ -107,7 +104,7 @@ class _SignupPageState extends State<SignupPage> {
           logger.i(value);
           Chauffeur chauffeur = Chauffeur(
             userAdresse: controllerAdress.text,
-            userEmail: controlleremail.text,
+            userEmail: "tc${numberSubmited!.phoneNumber}@gmail.com",
             userName: controllerNom.text,
             userTelephone: numberSubmited!.phoneNumber,
             userCni: controllerCNI.text,
@@ -117,7 +114,9 @@ class _SignupPageState extends State<SignupPage> {
             expirePermiDate: expirePermi,
           );
           logger.i(chauffeur.toJson());
-          await Chauffeur.loginNumber(
+
+          //save driver informations after otp code authentication receive
+          /*await Chauffeur.loginNumber(
             chauffeur,
             context: context,
             onCodeSend: (verificationId, forceResendingToken) {
@@ -132,7 +131,17 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               );
             },
-          );
+          );*/
+
+          await Chauffeur.driverRegisterWithEmail(context ,email: "tc${numberSubmited!.phoneNumber}@gmail.com",
+              password: controllerMotdePasse.text, chauffeur: chauffeur).then((value) {
+                if(value != null){
+                  toaster(
+                      message: value,
+                      color: Colors.red);
+                }
+          });
+
           // loader = false;
           // setState(() {});
         }

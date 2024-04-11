@@ -324,6 +324,46 @@ class Chauffeur extends ApplicationUser {
     }
   }
 
+
+  static Future driverRegisterWithEmail(BuildContext context, {required String email,
+    required String password,
+    required Chauffeur chauffeur}) async {
+    String? result;
+    try {
+      final userCredential = await authentication.createUserWithEmailAndPassword(
+          email: email, password: password);
+      if (userCredential.user != null) {
+
+        chauffeur.userid = userCredential.user!.uid;
+        await userCredential.user!.updateEmail(chauffeur.userEmail);
+        await userCredential.user!.updateDisplayName(chauffeur.userName);
+        await userCredential.user!.updatePassword(chauffeur.passeword!);
+        await chauffeur.saveUser().then((value) {
+          Get.find<ChauffeurController>().applicationUser.value =
+              chauffeur;
+          Navigator.of(context).pushReplacement(
+            PageTransition(
+              child: TransitionChauffeurVehicule(
+                  applicationUser: chauffeur),
+              type: PageTransitionType.leftToRight,
+            ),
+          );
+        });
+
+        //await util.user!.sendEmailVerification();
+      } else {
+        result = "Erreur pendant l'enregistrement du chauffeur";
+        return result;
+      }
+    } on FirebaseAuthException catch (e) {
+      result = e.code;
+      return result;
+    } on Exception catch (e) {
+      result = e.toString();
+      return result;
+    }
+  }
+
 // fin de la classe
 }
 
